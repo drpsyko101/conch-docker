@@ -4,9 +4,12 @@ A minimal Docker image for [Conch](https://github.com/newo-ether/conch) — a li
 
 ## Configuration (environment variables)
 
+> [!WARNING]
+> Conch will **refuse to start without an API key** unless you set `CONCH_ALLOW_NO_AUTH=true`. Always supply `CONCH_API_KEY`.
+
 | Variable                | Default          | Description                                                        |
 | ----------------------- | ---------------- | ------------------------------------------------------------------ |
-| `CONCH_API_KEY`         | _(required)_     | Pre-shared key for HMAC signing + key exchange.[^1]                |
+| `CONCH_API_KEY`         | _(required)_     | Pre-shared key for HMAC signing + key exchange.                    |
 | `CONCH_HOST`            | `0.0.0.0`        | Listen address.                                                    |
 | `CONCH_PORT`            | `14216`          | HTTP listen port.                                                  |
 | `CONCH_TIMEOUT`         | `30`             | Default command timeout (seconds).                                 |
@@ -83,5 +86,3 @@ The `conch-jobs` named volume persists durable background-job snapshots across r
 - **Security:** Conch exposes a remote shell. Keep `CONCH_API_KEY` strong and only expose the port to networks you trust. Do not set `CONCH_ALLOW_NO_AUTH=true` on an untrusted network.
 - **Upgrading:** bump `CONCH_VERSION` in the `Dockerfile` (or pass `--build-arg CONCH_VERSION=...`) and rebuild.
 - **MCP bridge:** the `conch-mcp` binary is a separate stdio bridge for Claude Desktop and is not included in this image. Run it on the client machine and point it at this server with `CONCH_SERVER_URL` and `CONCH_API_KEY`.
-
-[^1]: Conch **refuses to start without an API key** unless you set `CONCH_ALLOW_NO_AUTH=true`. Always supply `CONCH_API_KEY`.
