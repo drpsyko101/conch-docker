@@ -5,7 +5,7 @@ A minimal Docker image for [Conch](https://github.com/newo-ether/conch) — a li
 ## Configuration (environment variables)
 
 > [!WARNING]
-> Conch will **refuse to start without an API key** unless you set `CONCH_ALLOW_NO_AUTH=true`. Always supply `CONCH_API_KEY`.
+> Conch will **refuse to start without an API key** unless you set `CONCH_ALLOW_NO_AUTH=true`. Always supply `CONCH_API_KEY` environment variable.
 
 | Variable                | Default          | Description                                                        |
 | ----------------------- | ---------------- | ------------------------------------------------------------------ |

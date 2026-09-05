@@ -29,15 +29,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Update Docker Hub overview
-        env:
-          TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          # Build the JSON payload with the README safely escaped.
-          jq -Rs '{full_description: .}' README.md > payload.json
-          curl -fsSL -X PUT \
-            -H "Authorization: Token ${TOKEN}" \
-            -H "Content-Type: application/json" \
-            --data @payload.json \
-            "https://hub.docker.com/v2/repositories/${REPO}/"
+      - name: Update Docker Hub Description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+            repository: my-namespace/my-repo
+            short-description: "My project short description."
+            readme-filepath: ./README.md
