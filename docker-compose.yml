@@ -1,0 +1,22 @@
+services:
+  conch:
+    build: .
+    image: conch:latest
+    container_name: conch
+    ports:
+      # host:container — change the left side to publish on a different port.
+      - "14216:14216"
+    environment:
+      # Required. Copy .env.example to .env and set a strong value.
+      CONCH_API_KEY: ${CONCH_API_KEY:?Set CONCH_API_KEY (copy .env.example to .env)}
+      CONCH_HOST: 0.0.0.0
+      CONCH_PORT: 14216
+      CONCH_TIMEOUT: 30
+      CONCH_MAX_TIMEOUT: 1800
+    volumes:
+      # Persist durable background-job snapshots across container rebuilds.
+      - conch-jobs:/var/lib/conch
+    restart: unless-stopped
+
+volumes:
+  conch-jobs:
