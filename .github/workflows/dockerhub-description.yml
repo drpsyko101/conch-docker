@@ -1,0 +1,43 @@
+# Keeps the Docker Hub repository overview in sync with README.md.
+#
+# Whenever a push touches README.md, its contents are uploaded as the
+# repository's full_description via the Docker Hub API.
+#
+# Uses the same DOCKERHUB_TOKEN secret as the release workflow.
+
+name: Docker Hub Description
+
+on:
+  push:
+    paths:
+      - 'README.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dockerhub-description
+  cancel-in-progress: true
+
+env:
+  REPO: drpsyko101/conch
+
+jobs:
+  update-description:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Docker Hub overview
+        env:
+          TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Build the JSON payload with the README safely escaped.
+          jq -Rs '{full_description: .}' README.md > payload.json
+          curl -fsSL -X PUT \
+            -H "Authorization: Token ${TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data @payload.json \
+            "https://hub.docker.com/v2/repositories/${REPO}/"
